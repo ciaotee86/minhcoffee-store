@@ -27,7 +27,8 @@ export function Hero({ onNav }: { onNav: (href: string) => void }) {
               <h2 className="font-serif text-coffee text-hero font-medium">
                 Một góc nhỏ
                 <br />
-                để <span className="hand-underline">
+                để{' '}
+                <span className="hand-underline">
                   <span className="font-hand text-orange text-[0.85em] font-normal">ngồi lại</span>
                   <svg viewBox="0 0 120 14" preserveAspectRatio="none" aria-hidden="true">
                     <path d="M2 8 Q 30 2 60 7 T 118 6" />

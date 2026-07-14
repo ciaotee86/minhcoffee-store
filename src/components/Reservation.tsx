@@ -142,9 +142,9 @@ export function Reservation() {
               <h2 className="font-serif text-coffee text-h2 font-medium">
                 Đặt trước một chỗ ngồi,
                 <br />
-                để khi đến chỉ cần
+                để khi đến chỉ cần{' '}
                 <span className="hand-underline">
-                  {' '}chọn món
+                  chọn món
                   <svg viewBox="0 0 110 14" preserveAspectRatio="none" aria-hidden="true">
                     <path d="M2 8 Q 28 2 55 7 T 108 6" />
                   </svg>

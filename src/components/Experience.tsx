@@ -45,9 +45,9 @@ export function Experience() {
 
         <Reveal delay={1}>
           <h2 className="font-serif text-coffee text-h2 font-medium max-w-2xl mb-14 md:mb-20">
-            Ghé Minh vào lúc nào
+            Ghé Minh vào lúc nào{' '}
             <span className="hand-underline">
-              {' '}cũng được
+              cũng được
               <svg viewBox="0 0 110 14" preserveAspectRatio="none" aria-hidden="true">
                 <path d="M2 8 Q 28 2 55 7 T 108 6" />
               </svg>

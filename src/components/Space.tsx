@@ -57,9 +57,9 @@ export function Space() {
 
         <Reveal delay={1}>
           <h2 className="font-serif text-coffee text-h2 font-medium max-w-2xl mb-10 md:mb-14">
-            Bạn sẽ ngồi ở đâu khi
+            Bạn sẽ ngồi ở đâu khi{' '}
             <span className="hand-underline">
-              {' '}đến quán
+              đến quán
               <svg viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true">
                 <path d="M2 8 Q 25 2 50 7 T 98 6" />
               </svg>

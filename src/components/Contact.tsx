@@ -61,9 +61,9 @@ export function Contact() {
           <div className="col-span-12 md:col-span-5 md:col-start-8 mt-2 md:mt-4">
             <Reveal delay={2}>
               <h2 className="font-serif text-coffee text-h2 font-medium mb-8">
-                Ghé quán ở
+                Ghé quán ở{' '}
                 <span className="hand-underline">
-                  {' '} Đà Nẵng
+                  Đà Nẵng
                   <svg viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true">
                     <path d="M2 8 Q 25 2 50 7 T 98 6" />
                   </svg>

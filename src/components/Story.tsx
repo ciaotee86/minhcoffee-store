@@ -47,9 +47,9 @@ export function Story() {
           <div className="col-span-12 md:col-span-6 md:col-start-7 mt-8 md:mt-12">
             <Reveal delay={2}>
               <h2 className="font-serif text-coffee text-h2 font-medium">
-                Quán nhỏ, nhưng mỗi món đều
+                Quán nhỏ, nhưng mỗi món đều{' '}
                 <span className="hand-underline">
-                  {' '}được làm chỉn chu
+                  được làm chỉn chu
                   <svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true">
                     <path d="M2 8 Q 50 2 100 7 T 198 6" />
                   </svg>

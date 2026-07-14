@@ -51,9 +51,9 @@ export function Menu({ onNav }: { onNav: (href: string) => void }) {
             <h2 className="font-serif text-coffee text-h2 font-medium">
               Menu vừa đủ quen,
               <br />
-              nhưng mỗi món đều
+              nhưng mỗi món đều{' '}
               <span className="hand-underline">
-                {' '}được làm kỹ
+                được làm kỹ
                 <svg viewBox="0 0 140 14" preserveAspectRatio="none" aria-hidden="true">
                   <path d="M2 8 Q 35 2 70 7 T 138 6" />
                 </svg>
