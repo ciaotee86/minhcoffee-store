@@ -26,9 +26,11 @@ export function Story() {
               <div className="cut-corner overflow-hidden border border-coffee/15 bg-beige-light">
                 <img
                   src={STORY_IMG}
-                  alt="Góc nhìn vào không gian quán cà phê, bàn gỗ, ánh sáng chiếu qua cửa sổ"
+                  alt="Góc làm việc yên tĩnh tại quán cà phê Quận 3, bàn gỗ và ánh sáng tự nhiên"
                   className="w-full h-[320px] md:h-[480px] object-cover"
                   loading="lazy"
+                  width="500"
+                  height="480"
                 />
               </div>
               {/* Handwritten note */}
@@ -59,8 +61,7 @@ export function Story() {
               <div className="mt-7 space-y-5 text-lg text-muted leading-relaxed max-w-lg">
                 <p>
                   Cà phê Minh bắt đầu từ một căn nhà cũ trong hẻm Quận 3. Mình giữ lại phần gỗ,
-                  mở thêm cửa sổ cho nắng lọt vào, và đặt vài chiếc bàn đủ rộng để vừa đặt laptop
-                  vừa đặt ly cà phê.
+                  mở thêm cửa sổ cho nắng lọt vào, và tạo ra một <strong>quán cà phê yên tĩnh</strong> với những chiếc bàn đủ rộng để bạn vừa đặt laptop làm việc, vừa nhâm nhi ly cà phê.
                 </p>
                 <p>
                   Menu không dài. Mình chỉ bán những món mình uống được mỗi ngày — cà phê phin,

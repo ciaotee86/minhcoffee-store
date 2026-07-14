@@ -31,6 +31,8 @@ export type ShopInfo = {
   maps_link: string | null;
   parking_note: string | null;
   opening_hours: Record<string, any>;
+  reservation_start_time: string;
+  reservation_end_time: string;
   reservation_notification_email: string | null;
   hero_image_url: string | null;
   is_singleton: boolean;

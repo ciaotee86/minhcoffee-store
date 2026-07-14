@@ -9,19 +9,37 @@ serve(async (req) => {
   try {
     // 1. Nhận Webhook Payload
     const payload = await req.json();
-    const record = payload.record;
+    const recordId = payload?.record?.id;
 
-    if (!record || payload.table !== 'reservations' || payload.type !== 'INSERT') {
+    if (!recordId || payload.table !== 'reservations' || payload.type !== 'INSERT') {
       return new Response(JSON.stringify({ error: 'Invalid payload' }), { status: 400 });
+    }
+
+    // Xác minh Webhook Secret
+    const WEBHOOK_SECRET = Deno.env.get('WEBHOOK_SECRET');
+    const signature = req.headers.get('x-webhook-secret');
+    if (WEBHOOK_SECRET && signature !== WEBHOOK_SECRET) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+    }
+
+    // Khởi tạo Supabase client với Service Role để bypass RLS
+    const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
+
+    // Query lại DB để tránh bị giả mạo payload
+    const { data: record, error: fetchError } = await supabase
+      .from('reservations')
+      .select('*')
+      .eq('id', recordId)
+      .single();
+
+    if (fetchError || !record) {
+      return new Response(JSON.stringify({ error: 'Reservation not found' }), { status: 404 });
     }
 
     // 2. Kiểm tra Idempotent (Chỉ xử lý khi notification_status là PENDING)
     if (record.notification_status !== 'PENDING') {
       return new Response(JSON.stringify({ message: 'Already processed' }), { status: 200 });
     }
-
-    // Khởi tạo Supabase client với Service Role để bypass RLS
-    const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
 
     // 3. Lấy email nhận thông báo từ shop_info
     const { data: shopInfo } = await supabase

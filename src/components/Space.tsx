@@ -4,7 +4,7 @@ import { CoffeeRing } from './CoffeeRing';
 const IMAGES = [
   {
     url: 'https://images.pexels.com/photos/1855214/pexels-photo-1855214.jpeg?auto=compress&cs=tinysrgb&w=900',
-    alt: 'Góc nhìn vào không gian quán, bàn gỗ dài, ánh sáng ấm',
+    alt: 'Không gian làm việc yên tĩnh tại quán cà phê Quận 3, bàn gỗ dài, ánh sáng ấm',
     caption: 'Khu ngồi chung',
     note: 'Bàn gỗ dài, ghế tựa lưng — ngồi làm việc cả buổi cũng không mỏi.',
     span: 'lg:col-span-7',
@@ -13,7 +13,7 @@ const IMAGES = [
   },
   {
     url: 'https://images.pexels.com/photos/31332842/pexels-photo-31332842.jpeg?auto=compress&cs=tinysrgb&w=600',
-    alt: 'Bàn gần cửa sổ, nắng chiếu vào, có người ngồi làm việc',
+    alt: 'Bàn gần cửa sổ đón nắng, góc học tập và làm việc lý tưởng',
     caption: 'Bàn gần cửa sổ',
     note: 'Nắng lọt vào từ sáng đến trưa — chỗ ngồi được đặt trước nhiều nhất.',
     span: 'lg:col-span-5',
@@ -22,7 +22,7 @@ const IMAGES = [
   },
   {
     url: 'https://images.pexels.com/photos/10507830/pexels-photo-10507830.jpeg?auto=compress&cs=tinysrgb&w=600',
-    alt: 'Khu vực ngồi nhóm, vài người trò chuyện quanh bàn',
+    alt: 'Khu vực ngồi nhóm gặp gỡ bạn bè tại Cà phê Minh',
     caption: 'Khu ngồi nhóm',
     note: 'Góc trong cùng, tách tiếng ồn — hợp cho nhóm 4–6 người.',
     span: 'lg:col-span-5',
@@ -31,7 +31,7 @@ const IMAGES = [
   },
   {
     url: 'https://images.pexels.com/photos/22873741/pexels-photo-22873741.jpeg?auto=compress&cs=tinysrgb&w=600',
-    alt: 'Cận cảnh ly cà phê trên bàn, chi tiết gỗ và ánh sáng',
+    alt: 'Cận cảnh quầy pha chế quán cà phê đẹp Quận 3',
     caption: 'Quầy pha chế',
     note: 'Ngồi ngay quầy nếu thích xem barista pha từng ly.',
     span: 'lg:col-span-7',
@@ -82,6 +82,8 @@ export function Space() {
                     alt={img.alt}
                     className={`w-full ${img.height} object-cover transition-transform duration-700 hover:scale-[1.03]`}
                     loading="lazy"
+                    width="500"
+                    height="300"
                   />
                 </div>
                 <figcaption className="mt-3 flex items-start gap-3">

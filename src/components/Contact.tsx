@@ -48,7 +48,7 @@ export function Contact() {
           <Reveal delay={1} className="col-span-12 md:col-span-7">
             <div className="relative cut-corner overflow-hidden border border-coffee/15 bg-beige-light">
               <iframe
-                title={`Bản đồ vị trí ${shop?.shop_name || 'Cà phê Minh'}`}
+                title={`Bản đồ đường đi đến quán cà phê ${shop?.shop_name || 'Cà phê Minh'} tại Quận 3`}
                 src={mapEmbedUrl}
                 className="w-full h-[320px] md:h-[440px] grayscale-[30%] sepia-[20%]"
                 loading="lazy"

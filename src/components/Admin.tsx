@@ -529,6 +529,7 @@ function MenuForm({ item, categories, onClose, onSaved }: { item: MenuItem | nul
 // ---------- Shop Manager ----------
 function ShopManager() {
   const [shop, setShop] = useState<ShopInfo | null>(null);
+  const [openingHoursStr, setOpeningHoursStr] = useState('');
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const { showToast } = useToast();
@@ -536,6 +537,13 @@ function ShopManager() {
   const load = async () => {
     const { data } = await supabase.from('shop_info').select('*').limit(1).maybeSingle();
     setShop(data as ShopInfo);
+    
+    if (data?.opening_hours) {
+      const hoursStr = Object.entries(data.opening_hours)
+        .map(([k, v]) => `${k}: ${v}`)
+        .join('\n');
+      setOpeningHoursStr(hoursStr);
+    }
     setLoading(false);
   };
   useEffect(() => { load(); }, []);
@@ -549,6 +557,12 @@ function ShopManager() {
     e.preventDefault();
     if (!shop) return;
     setBusy(true);
+    const newHours = openingHoursStr.split('\n').reduce((acc, line) => {
+      const [k, ...v] = line.split(':');
+      if (k && v.length) acc[k.trim()] = v.join(':').trim();
+      return acc;
+    }, {} as Record<string, string>);
+
     await supabase.from('shop_info').update({
       shop_name: shop.shop_name,
       address: shop.address,
@@ -558,6 +572,9 @@ function ShopManager() {
       facebook_link: shop.facebook_link || null,
       maps_link: shop.maps_link || null,
       parking_note: shop.parking_note || null,
+      opening_hours: newHours,
+      reservation_start_time: shop.reservation_start_time,
+      reservation_end_time: shop.reservation_end_time,
       reservation_notification_email: shop.reservation_notification_email || null,
     }).eq('id', shop.id);
     setBusy(false);
@@ -580,7 +597,30 @@ function ShopManager() {
           <div><label className="text-xs uppercase font-semibold">Maps Link</label><input name="maps_link" value={shop.maps_link || ''} onChange={handleChange} className="form-input mt-1" /></div>
         </div>
         <div><label className="text-xs uppercase font-semibold">Ghi chú gửi xe</label><textarea name="parking_note" value={shop.parking_note || ''} onChange={handleChange} rows={2} className="form-input mt-1 resize-none" /></div>
+        
+        <div>
+          <label className="text-xs uppercase font-semibold">Giờ mở cửa (Cửa hàng)</label>
+          <textarea 
+            value={openingHoursStr} 
+            onChange={(e) => setOpeningHoursStr(e.target.value)} 
+            rows={3} 
+            placeholder={"Thứ 2 - Thứ 6: 07:30 - 21:00\nThứ 7 - CN: 08:00 - 22:00"}
+            className="form-input mt-1 resize-none" 
+          />
+          <p className="text-xs mt-1 text-muted">Nhập mỗi dòng 1 khung giờ. Ví dụ: <code>T2-T6: 07:30 - 21:00</code></p>
+        </div>
         <div className="pt-4 border-t border-coffee/10">
+          <h3 className="font-semibold text-sm mb-2 text-coffee">Giờ nhận khách (Đặt bàn)</h3>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="text-xs uppercase font-semibold">Giờ bắt đầu</label>
+              <input name="reservation_start_time" type="time" value={shop.reservation_start_time} onChange={handleChange} required className="form-input mt-1" />
+            </div>
+            <div>
+              <label className="text-xs uppercase font-semibold">Giờ kết thúc (nhận khách cuối)</label>
+              <input name="reservation_end_time" type="time" value={shop.reservation_end_time} onChange={handleChange} required className="form-input mt-1" />
+            </div>
+          </div>
           <label className="text-xs uppercase font-semibold text-orange">Email nhận thông báo đặt bàn (Nội bộ)</label>
           <input name="reservation_notification_email" type="email" value={shop.reservation_notification_email || ''} onChange={handleChange} className="form-input mt-1" placeholder="Vd: quanly@caphe-minh.vn" />
           <p className="text-xs mt-1 text-muted">Email này sẽ nhận thông báo khi có khách đặt bàn trên web.</p>

@@ -67,6 +67,8 @@ export function Experience() {
                         alt={block.alt}
                         className="w-full h-[280px] md:h-[360px] object-cover transition-transform duration-700 hover:scale-[1.03]"
                         loading="lazy"
+                        width="400"
+                        height="360"
                       />
                     </div>
                   </Reveal>
@@ -83,6 +85,8 @@ export function Experience() {
                         alt={block.alt}
                         className="w-full h-[280px] md:h-[360px] object-cover transition-transform duration-700 hover:scale-[1.03]"
                         loading="lazy"
+                        width="400"
+                        height="360"
                       />
                     </div>
                   </Reveal>

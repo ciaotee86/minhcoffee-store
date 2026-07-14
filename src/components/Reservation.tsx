@@ -16,27 +16,73 @@ type FormState = {
 
 const EMPTY: FormState = { name: '', phone: '', email: '', date: '', time: '', guests: '2', note: '' };
 
-const TIME_SLOTS = [
-  '07:30', '08:00', '08:30', '09:00', '09:30', '10:00',
-  '10:30', '11:00', '11:30', '12:00', '12:30', '13:00',
-  '13:30', '14:00', '14:30', '15:00', '15:30', '16:00',
-  '16:30', '17:00', '17:30', '18:00', '18:30', '19:00',
-  '19:30', '20:00', '20:30', '21:00',
-];
-
 export function Reservation() {
   const [form, setForm] = useState<FormState>(EMPTY);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [serverError, setServerError] = useState('');
+  const [shopConfig, setShopConfig] = useState<{ start: string; end: string } | null>(null);
   const { showToast } = useToast();
+
+  // Load cấu hình thời gian
+  useState(() => {
+    supabase.from('shop_info').select('reservation_start_time, reservation_end_time').limit(1).maybeSingle()
+      .then(({ data }) => {
+        if (data) {
+          setShopConfig({ start: data.reservation_start_time, end: data.reservation_end_time });
+        } else {
+          setShopConfig({ start: '07:30:00', end: '21:00:00' });
+        }
+      });
+  });
+
+  const getVnToday = () => {
+    const vnTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
+    const vnDateObj = new Date(vnTime);
+    const y = vnDateObj.getFullYear();
+    const m = (vnDateObj.getMonth() + 1).toString().padStart(2, '0');
+    const d = vnDateObj.getDate().toString().padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  };
+  const todayStr = getVnToday();
+
+  const getAvailableTimeSlots = () => {
+    if (!shopConfig) return [];
+    const slots = [];
+    const [startH, startM] = shopConfig.start.split(':').map(Number);
+    const [endH, endM] = shopConfig.end.split(':').map(Number);
+    
+    let currentH = startH;
+    let currentM = startM === 30 ? 30 : 0;
+    
+    while (currentH < endH || (currentH === endH && currentM <= endM)) {
+      const hh = currentH.toString().padStart(2, '0');
+      const mm = currentM.toString().padStart(2, '0');
+      slots.push(`${hh}:${mm}`);
+      currentM += 30;
+      if (currentM >= 60) {
+        currentH += 1;
+        currentM -= 60;
+      }
+    }
+    
+    if (form.date === todayStr) {
+      const vnTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
+      const vnDateObj = new Date(vnTime);
+      const currentTimeStr = `${vnDateObj.getHours().toString().padStart(2, '0')}:${vnDateObj.getMinutes().toString().padStart(2, '0')}`;
+      return slots.filter(slot => slot > currentTimeStr);
+    }
+    
+    return slots;
+  };
+  const availableSlots = getAvailableTimeSlots();
 
   const validate = (): boolean => {
     const e: Partial<Record<keyof FormState, string>> = {};
-    if (!form.name.trim()) e.name = 'Vui lòng nhập họ tên';
+    if (form.name.trim().length < 2) e.name = 'Vui lòng nhập họ tên (từ 2 ký tự)';
     if (!form.phone.trim()) e.phone = 'Vui lòng nhập số điện thoại';
-    else if (!/^[0-9+\s()-]{8,15}$/.test(form.phone.trim())) e.phone = 'Số điện thoại không hợp lệ';
+    else if (!/^(0|\+84)[0-9]{9}$/.test(form.phone.trim())) e.phone = 'Số điện thoại không hợp lệ';
     if (!form.date) e.date = 'Vui lòng chọn ngày';
     if (!form.time) e.time = 'Vui lòng chọn giờ';
     const g = parseInt(form.guests, 10);
@@ -71,11 +117,9 @@ export function Reservation() {
       return;
     }
     setSuccess(true);
-    showToast('Yêu cầu đặt bàn đã được gửi!', 'success');
+    showToast('Quán đã nhận yêu cầu đặt bàn của bạn và sẽ liên hệ để xác nhận.', 'success');
     setForm(EMPTY);
   };
-
-  const today = new Date().toISOString().split('T')[0];
 
   return (
     <section id="reserve" className="relative py-section">
@@ -128,13 +172,14 @@ export function Reservation() {
             {success ? (
               <Reveal className="relative">
                 <div className="paper-note p-10 md:p-14 text-center min-h-[420px] flex flex-col items-center justify-center">
-                  <div className="confirm-stamp animate-stamp mb-6">Đã ghi bàn</div>
+                  <div className="w-16 h-16 bg-orange/10 text-orange rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
                   <h3 className="font-serif text-coffee text-3xl font-medium mb-3">
                     Cảm ơn bạn đã đặt bàn.
                   </h3>
                   <p className="text-muted text-lg max-w-md leading-relaxed">
-                    Quán sẽ gọi điện cho bạn để xác nhận trong giờ mở cửa.
-                    Nếu cần gấp, hãy gọi trực tiếp: 028 3999 1234.
+                    Quán đã nhận yêu cầu đặt bàn của bạn và sẽ liên hệ để xác nhận.
                   </p>
                   <button
                     onClick={() => setSuccess(false)}
@@ -211,9 +256,12 @@ export function Reservation() {
                     >
                       <input
                         type="date"
-                        min={today}
+                        min={todayStr}
                         value={form.date}
-                        onChange={(e) => setForm({ ...form, date: e.target.value })}
+                        onChange={(e) => {
+                          setForm({ ...form, date: e.target.value, time: '' });
+                          if (errors.date) setErrors({ ...errors, date: '' });
+                        }}
                         className="form-input"
                         aria-required="true"
                         aria-invalid={!!errors.date}
@@ -226,16 +274,24 @@ export function Reservation() {
                       error={errors.time}
                     >
                       <select
+                        name="time"
                         value={form.time}
-                        onChange={(e) => setForm({ ...form, time: e.target.value })}
+                        onChange={(e) => {
+                          setForm({ ...form, time: e.target.value });
+                          if (errors.time) setErrors({ ...errors, time: '' });
+                        }}
                         className="form-input"
                         aria-required="true"
                         aria-invalid={!!errors.time}
                       >
-                        <option value="">Chọn giờ</option>
-                        {TIME_SLOTS.map((t) => (
-                          <option key={t} value={t}>{t}</option>
-                        ))}
+                        <option value="" disabled>Chọn giờ</option>
+                        {availableSlots.length > 0 ? (
+                          availableSlots.map((t) => (
+                            <option key={t} value={t}>{t}</option>
+                          ))
+                        ) : (
+                          <option value="" disabled>Đã hết giờ nhận khách hôm nay</option>
+                        )}
                       </select>
                     </Field>
 

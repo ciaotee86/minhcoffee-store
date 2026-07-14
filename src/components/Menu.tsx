@@ -144,9 +144,11 @@ function MenuCard({ item, index, categoryLabel }: { item: MenuItem; index: numbe
           {item.image_url ? (
             <img
               src={item.image_url}
-              alt={item.name}
+              alt={`${item.name} - Menu Cà phê Minh Quận 3`}
               className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.03]"
               loading="lazy"
+              width="300"
+              height="200"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-coffee/5 text-coffee/30 font-serif">

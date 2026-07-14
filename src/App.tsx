@@ -10,6 +10,7 @@ import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { Admin } from './components/Admin';
 import { ToastProvider } from './components/Toast';
+import { SeoStructuredData } from './components/SeoStructuredData';
 
 function useHashRoute() {
   const [hash, setHash] = useState(window.location.hash);
@@ -46,6 +47,7 @@ function App() {
 
   return (
     <ToastProvider>
+      <SeoStructuredData />
       <div className="min-h-screen">
         <Header onNav={handleNav} />
         <main>

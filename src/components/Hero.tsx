@@ -23,7 +23,8 @@ export function Hero({ onNav }: { onNav: (href: string) => void }) {
             </Reveal>
 
             <Reveal delay={1}>
-              <h1 className="font-serif text-coffee text-hero font-medium">
+              <h1 className="sr-only">Cà phê Minh - Quán cà phê yên tĩnh, làm việc và gặp gỡ tại Quận 3</h1>
+              <h2 className="font-serif text-coffee text-hero font-medium">
                 Một góc nhỏ
                 <br />
                 để <span className="hand-underline">
@@ -35,13 +36,12 @@ export function Hero({ onNav }: { onNav: (href: string) => void }) {
                 lâu hơn
                 <br />
                 một chút.
-              </h1>
+              </h2>
             </Reveal>
 
             <Reveal delay={2}>
               <p className="mt-6 text-lg text-muted max-w-md leading-relaxed">
-                Cà phê Minh nằm trong một con hẻm nhỏ của Quận 3 — chỗ để uống cà phê,
-                làm việc, gặp bạn, hoặc chỉ ngồi yên và để buổi trưa trôi chậm hơn.
+                Cà phê Minh nằm trong một con hẻm nhỏ tĩnh lặng của Quận 3 — một không gian lý tưởng để thưởng thức cà phê, tập trung làm việc, gặp gỡ bạn bè, hoặc chỉ ngồi yên và để buổi trưa trôi chậm hơn.
               </p>
             </Reveal>
 
@@ -66,10 +66,12 @@ export function Hero({ onNav }: { onNav: (href: string) => void }) {
                   <div className="cut-corner-tr overflow-hidden border border-coffee/15 bg-beige-light">
                     <img
                       src={HERO_MAIN}
-                      alt="Cận cảnh ly cà phê sữa đá trên mặt bàn gỗ, ánh sáng ấm chiếu qua cửa sổ"
+                      alt="Cận cảnh ly cà phê sữa đá trên mặt bàn gỗ tại không gian Cà phê Minh Quận 3"
                       className="w-full h-[280px] md:h-[420px] object-cover"
                       loading="eager"
                       fetchPriority="high"
+                      width="500"
+                      height="420"
                     />
                   </div>
                   {/* Note tag */}
@@ -85,17 +87,21 @@ export function Hero({ onNav }: { onNav: (href: string) => void }) {
                   <div className="overflow-hidden border border-coffee/15 bg-beige-light rotate-[2deg]">
                     <img
                       src={HERO_SUB1}
-                      alt="Tay cầm ly latte có hình nghệ thuật bọt sữa"
+                      alt="Ly cà phê nghệ thuật bọt sữa tại quán cafe đẹp Quận 3"
                       className="w-full h-[130px] md:h-[200px] object-cover"
                       loading="lazy"
+                      width="250"
+                      height="200"
                     />
                   </div>
                   <div className="overflow-hidden border border-coffee/15 bg-beige-light rotate-[-2deg]">
                     <img
                       src={HERO_SUB2}
-                      alt="Cốc cà phê đen trên bàn gỗ, ánh sáng tự nhiên"
+                      alt="Cốc cà phê đen trên bàn gỗ, góc làm việc yên tĩnh"
                       className="w-full h-[130px] md:h-[200px] object-cover"
                       loading="lazy"
+                      width="250"
+                      height="200"
                     />
                   </div>
                 </div>
