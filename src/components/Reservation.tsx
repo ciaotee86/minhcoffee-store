@@ -1,20 +1,33 @@
 import { useState, type FormEvent } from 'react';
+<<<<<<< HEAD
 import { supabase } from '../lib/supabase';
 import { CoffeeRing } from './CoffeeRing';
 import { Reveal } from './Reveal';
 import { useToast } from './Toast';
+=======
+import { supabase, type ReservationInput } from '../lib/supabase';
+import { CoffeeRing } from './CoffeeRing';
+import { Reveal } from './Reveal';
+>>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
 
 type FormState = {
   name: string;
   phone: string;
+<<<<<<< HEAD
   email: string;
+=======
+>>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
   date: string;
   time: string;
   guests: string;
   note: string;
 };
 
+<<<<<<< HEAD
 const EMPTY: FormState = { name: '', phone: '', email: '', date: '', time: '', guests: '2', note: '' };
+=======
+const EMPTY: FormState = { name: '', phone: '', date: '', time: '', guests: '2', note: '' };
+>>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
 
 const TIME_SLOTS = [
   '07:30', '08:00', '08:30', '09:00', '09:30', '10:00',
@@ -30,7 +43,10 @@ export function Reservation() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [serverError, setServerError] = useState('');
+<<<<<<< HEAD
   const { showToast } = useToast();
+=======
+>>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
 
   const validate = (): boolean => {
     const e: Partial<Record<keyof FormState, string>> = {};
@@ -48,6 +64,7 @@ export function Reservation() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setServerError('');
+<<<<<<< HEAD
     if (!validate()) {
       showToast('Vui lòng kiểm tra lại thông tin...', 'error');
       return;
@@ -72,6 +89,28 @@ export function Reservation() {
     }
     setSuccess(true);
     showToast('Yêu cầu đặt bàn đã được gửi!', 'success');
+=======
+    if (!validate()) return;
+    setSubmitting(true);
+
+    const payload: ReservationInput = {
+      name: form.name.trim(),
+      phone: form.phone.trim(),
+      date: form.date,
+      time: form.time,
+      guests: parseInt(form.guests, 10),
+      note: form.note.trim(),
+    };
+
+    const { error } = await supabase.from('reservations').insert(payload);
+    setSubmitting(false);
+
+    if (error) {
+      setServerError('Không gửi được đặt bàn. Vui lòng gọi điện cho quán: 028 3999 1234.');
+      return;
+    }
+    setSuccess(true);
+>>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
     setForm(EMPTY);
   };
 
@@ -192,6 +231,7 @@ export function Reservation() {
                     </Field>
 
                     <Field
+<<<<<<< HEAD
                       label="Email (không bắt buộc)"
                       error={errors.email}
                     >
@@ -205,6 +245,8 @@ export function Reservation() {
                     </Field>
 
                     <Field
+=======
+>>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
                       label="Ngày"
                       required
                       error={errors.date}
