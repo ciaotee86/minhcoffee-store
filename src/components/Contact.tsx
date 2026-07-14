@@ -63,7 +63,7 @@ export function Contact() {
               <h2 className="font-serif text-coffee text-h2 font-medium mb-8">
                 Ghé quán ở
                 <span className="hand-underline">
-                  {' '} Quận 3
+                  {' '} Đà Nẵng
                   <svg viewBox="0 0 100 14" preserveAspectRatio="none" aria-hidden="true">
                     <path d="M2 8 Q 25 2 50 7 T 98 6" />
                   </svg>

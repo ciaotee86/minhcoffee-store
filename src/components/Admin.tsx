@@ -327,7 +327,12 @@ function CategoryManager() {
             <label className="block text-xs uppercase tracking-[0.1em] text-coffee font-semibold mb-1.5">Tên hiển thị (Vd: Cà phê)</label>
             <input value={newLabel} onChange={(e) => setNewLabel(e.target.value)} required className="form-input" />
           </div>
-          <button type="submit" className="btn-primary py-2.5"><Plus size={16} /> Thêm</button>
+          <div className="flex-none">
+            <button type="submit" className="btn-primary h-[46px] px-6 gap-2 w-full sm:w-auto">
+              <Plus size={16} />
+              <span>Thêm</span>
+            </button>
+          </div>
         </form>
       </div>
 
