@@ -77,6 +77,7 @@ export default {
         'underline-draw': 'underlineDraw 0.7s cubic-bezier(0.65, 0, 0.35, 1) forwards',
         'float-soft': 'floatSoft 6s ease-in-out infinite',
         'stamp': 'stamp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+        'slide-in-right': 'slideInRight 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards',
       },
       keyframes: {
         fadeUp: {
@@ -102,6 +103,10 @@ export default {
         stamp: {
           '0%': { opacity: '0', transform: 'scale(1.8) rotate(-15deg)' },
           '100%': { opacity: '0.85', transform: 'scale(1) rotate(-8deg)' },
+        },
+        slideInRight: {
+          '0%': { opacity: '0', transform: 'translateX(30px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
         },
       },
       transitionTimingFunction: {

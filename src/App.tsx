@@ -9,6 +9,7 @@ import { Reservation } from './components/Reservation';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { Admin } from './components/Admin';
+import { ToastProvider } from './components/Toast';
 
 function useHashRoute() {
   const [hash, setHash] = useState(window.location.hash);
@@ -36,23 +37,29 @@ function App() {
   };
 
   if (isAdmin) {
-    return <Admin />;
+    return (
+      <ToastProvider>
+        <Admin />
+      </ToastProvider>
+    );
   }
 
   return (
-    <div className="min-h-screen">
-      <Header onNav={handleNav} />
-      <main>
-        <Hero onNav={handleNav} />
-        <Story />
-        <Menu onNav={handleNav} />
-        <Space />
-        <Experience />
-        <Reservation />
-        <Contact />
-      </main>
-      <Footer onNav={handleNav} />
-    </div>
+    <ToastProvider>
+      <div className="min-h-screen">
+        <Header onNav={handleNav} />
+        <main>
+          <Hero onNav={handleNav} />
+          <Story />
+          <Menu onNav={handleNav} />
+          <Space />
+          <Experience />
+          <Reservation />
+          <Contact />
+        </main>
+        <Footer onNav={handleNav} />
+      </div>
+    </ToastProvider>
   );
 }
 
