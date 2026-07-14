@@ -1,20 +1,10 @@
 import { useEffect, useState } from 'react';
-<<<<<<< HEAD
 import { supabase, type MenuItem, type Reservation, type Category, type ShopInfo, uploadImage } from '../lib/supabase';
 import { CoffeeRing } from './CoffeeRing';
 import { LogOut, Plus, Trash2, Pencil, X, Check, Clock, XCircle, CheckCircle2, Image as ImageIcon } from 'lucide-react';
 import { useToast } from './Toast';
 
 type Tab = 'reservations' | 'menu' | 'categories' | 'shop';
-=======
-import { supabase, type MenuItem, type Reservation } from '../lib/supabase';
-import { CoffeeRing } from './CoffeeRing';
-import {
-  LogOut, Plus, Trash2, Pencil, X, Check, Clock, XCircle, CheckCircle2,
-} from 'lucide-react';
-
-type Tab = 'reservations' | 'menu';
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
 
 export function Admin() {
   const [session, setSession] = useState<any>(null);
@@ -25,22 +15,14 @@ export function Admin() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
-<<<<<<< HEAD
       if (data.session) checkAdmin();
-=======
-      if (data.session) checkAdmin(data.session.user.id);
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
       else setLoading(false);
     });
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, sess) => {
       (async () => {
         setSession(sess);
-<<<<<<< HEAD
         if (sess) await checkAdmin();
-=======
-        if (sess) await checkAdmin(sess.user.id);
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
         else { setIsAdmin(false); setLoading(false); }
       })();
     });
@@ -48,13 +30,8 @@ export function Admin() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
-<<<<<<< HEAD
   const checkAdmin = async () => {
     const { data } = await supabase.from('admins').select('user_id').maybeSingle();
-=======
-  const checkAdmin = async (uid: string) => {
-    const { data } = await supabase.from('admins').select('user_id').eq('user_id', uid).maybeSingle();
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
     setIsAdmin(!!data);
     setLoading(false);
   };
@@ -68,25 +45,17 @@ export function Admin() {
   }
 
   if (!session || !isAdmin) {
-<<<<<<< HEAD
     return <AdminLogin hasSession={!!session} />;
-=======
-    return <AdminLogin onLoggedIn={() => {}} hasSession={!!session} />;
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
   }
 
   return (
     <div className="min-h-screen bg-cream-warm">
       <AdminHeader onSignOut={async () => { await supabase.auth.signOut(); }} tab={tab} setTab={setTab} />
       <main className="mx-auto max-w-site px-5 md:px-8 py-10">
-<<<<<<< HEAD
         {tab === 'reservations' && <ReservationManager />}
         {tab === 'menu' && <MenuManager />}
         {tab === 'categories' && <CategoryManager />}
         {tab === 'shop' && <ShopManager />}
-=======
-        {tab === 'reservations' ? <ReservationManager /> : <MenuManager />}
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
       </main>
     </div>
   );
@@ -94,7 +63,6 @@ export function Admin() {
 
 // ---------- Admin Header ----------
 function AdminHeader({ onSignOut, tab, setTab }: { onSignOut: () => void; tab: Tab; setTab: (t: Tab) => void }) {
-<<<<<<< HEAD
   const tabs: { k: Tab; l: string }[] = [
     { k: 'reservations', l: 'Đặt bàn' },
     { k: 'menu', l: 'Menu' },
@@ -104,27 +72,17 @@ function AdminHeader({ onSignOut, tab, setTab }: { onSignOut: () => void; tab: T
   return (
     <header className="bg-coffee text-cream-warm">
       <div className="mx-auto max-w-site px-5 md:px-8 py-4 flex flex-wrap gap-4 items-center justify-between">
-=======
-  return (
-    <header className="bg-coffee text-cream-warm">
-      <div className="mx-auto max-w-site px-5 md:px-8 py-4 flex items-center justify-between">
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
         <div className="flex items-center gap-2.5">
           <span className="relative inline-flex items-center justify-center w-8 h-8">
             <span className="absolute inset-0 rounded-full border-2 border-cream-warm rotate-[-8deg] opacity-70" />
             <span className="font-serif text-cream-warm text-sm font-semibold relative">M</span>
           </span>
-<<<<<<< HEAD
           <span className="font-serif text-lg font-semibold hidden sm:inline-block">
-=======
-          <span className="font-serif text-lg font-semibold">
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
             Cà phê <span className="font-hand text-orange text-xl">Minh</span>
             <span className="text-cream-warm/50 text-sm font-sans ml-2">— Quản trị</span>
           </span>
         </div>
         <div className="flex items-center gap-2">
-<<<<<<< HEAD
           <nav className="flex gap-1 mr-2 bg-coffee-light/20 p-1 rounded-lg">
             {tabs.map((t) => (
               <button
@@ -137,35 +95,12 @@ function AdminHeader({ onSignOut, tab, setTab }: { onSignOut: () => void; tab: T
                 {t.l}
               </button>
             ))}
-=======
-          <nav className="flex gap-1 mr-2">
-            <button
-              onClick={() => setTab('reservations')}
-              className={`px-3 py-1.5 text-sm rounded-l-sm rounded-r-lg transition-colors ${
-                tab === 'reservations' ? 'bg-orange text-cream-warm' : 'text-cream-warm/70 hover:text-cream-warm'
-              }`}
-            >
-              Đặt bàn
-            </button>
-            <button
-              onClick={() => setTab('menu')}
-              className={`px-3 py-1.5 text-sm rounded-l-sm rounded-r-lg transition-colors ${
-                tab === 'menu' ? 'bg-orange text-cream-warm' : 'text-cream-warm/70 hover:text-cream-warm'
-              }`}
-            >
-              Menu
-            </button>
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
           </nav>
           <a href="#top" className="text-cream-warm/60 hover:text-orange text-sm px-2 transition-colors">
             Xem trang
           </a>
           <button onClick={onSignOut} className="inline-flex items-center gap-1.5 text-cream-warm/70 hover:text-orange text-sm px-2 transition-colors">
-<<<<<<< HEAD
             <LogOut size={15} /> <span className="hidden sm:inline">Đăng xuất</span>
-=======
-            <LogOut size={15} /> Đăng xuất
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
           </button>
         </div>
       </div>
@@ -173,7 +108,6 @@ function AdminHeader({ onSignOut, tab, setTab }: { onSignOut: () => void; tab: T
   );
 }
 
-<<<<<<< HEAD
 // ---------- Admin Login ----------
 function AdminLogin({ hasSession }: { hasSession: boolean }) {
   const [email, setEmail] = useState('');
@@ -187,55 +121,6 @@ function AdminLogin({ hasSession }: { hasSession: boolean }) {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
     if (error) showToast(error.message.includes('Invalid login') ? 'Email hoặc mật khẩu không đúng.' : error.message, 'error');
-=======
-// ---------- Admin Login / Bootstrap ----------
-function AdminLogin({ hasSession }: { onLoggedIn: () => void; hasSession: boolean }) {
-  const [mode, setMode] = useState<'login' | 'bootstrap'>('login');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
-  const [error, setError] = useState('');
-  const [busy, setBusy] = useState(false);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setBusy(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setBusy(false);
-    if (error) setError(error.message.includes('Invalid login') ? 'Email hoặc mật khẩu không đúng.' : error.message);
-  };
-
-  const handleBootstrap = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    if (password !== confirm) { setError('Mật khẩu xác nhận không khớp.'); return; }
-    if (password.length < 8) { setError('Mật khẩu ít nhất 8 ký tự.'); return; }
-    setBusy(true);
-
-    const fnUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/reservation-notify`;
-    const headers = {
-      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json',
-    };
-
-    try {
-      const res = await fetch(fnUrl, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ type: 'bootstrap-admin', payload: { email, password } }),
-      });
-      const data = await res.json();
-      setBusy(false);
-      if (!res.ok) { setError(data.error || 'Không tạo được tài khoản.'); return; }
-      // Auto-login
-      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-      if (signInError) setError('Tài khoản đã tạo. Vui lòng đăng nhập thủ công.');
-    } catch {
-      setBusy(false);
-      setError('Không kết nối được đến máy chủ. Thử lại sau.');
-    }
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
   };
 
   return (
@@ -245,35 +130,18 @@ function AdminLogin({ hasSession }: { onLoggedIn: () => void; hasSession: boolea
 
       <div className="relative w-full max-w-md">
         <div className="text-center mb-8">
-<<<<<<< HEAD
           <h1 className="font-serif text-coffee text-2xl font-medium">Đăng nhập Quản trị</h1>
-=======
-          <span className="relative inline-flex items-center justify-center w-14 h-14 mb-4">
-            <span className="absolute inset-0 rounded-full border-2 border-coffee rotate-[-8deg] opacity-70" />
-            <span className="absolute inset-2 rounded-full border border-orange rotate-[-4deg] opacity-50" />
-            <span className="font-serif text-coffee text-2xl font-semibold relative">M</span>
-          </span>
-          <h1 className="font-serif text-coffee text-2xl font-medium">
-            Cà phê <span className="font-hand text-orange text-3xl">Minh</span>
-          </h1>
-          <p className="text-muted text-sm mt-1">Khu quản trị</p>
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
         </div>
 
         {hasSession && (
           <div className="paper-note p-4 mb-4 text-center rotate-[-1deg]">
             <p className="font-hand text-coffee text-sm">
-<<<<<<< HEAD
               Tài khoản của bạn không có quyền quản trị.
-=======
-              Tài khoản của bạn không có quyền quản trị. Liên hệ chủ quán để được cấp quyền.
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
             </p>
           </div>
         )}
 
         <div className="paper-note p-6 md:p-8">
-<<<<<<< HEAD
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-xs uppercase tracking-[0.1em] text-coffee font-semibold mb-1.5">Email</label>
@@ -288,83 +156,6 @@ function AdminLogin({ hasSession }: { onLoggedIn: () => void; hasSession: boolea
             </button>
           </form>
         </div>
-=======
-          {/* Mode toggle */}
-          <div className="flex gap-1 mb-6">
-            <button
-              onClick={() => { setMode('login'); setError(''); }}
-              className={`flex-1 py-2 text-sm font-medium rounded-l-sm rounded-r-lg transition-colors ${
-                mode === 'login' ? 'bg-coffee text-cream-warm' : 'text-coffee hover:text-orange'
-              }`}
-            >
-              Đăng nhập
-            </button>
-            <button
-              onClick={() => { setMode('bootstrap'); setError(''); }}
-              className={`flex-1 py-2 text-sm font-medium rounded-l-sm rounded-r-lg transition-colors ${
-                mode === 'bootstrap' ? 'bg-coffee text-cream-warm' : 'text-coffee hover:text-orange'
-              }`}
-            >
-              Tạo tài khoản (lần đầu)
-            </button>
-          </div>
-
-          <form onSubmit={mode === 'login' ? handleLogin : handleBootstrap} className="space-y-4">
-            <div>
-              <label className="block text-xs uppercase tracking-[0.1em] text-coffee font-semibold mb-1.5">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="minh@caphe-minh.vn"
-                className="form-input"
-              />
-            </div>
-            <div>
-              <label className="block text-xs uppercase tracking-[0.1em] text-coffee font-semibold mb-1.5">Mật khẩu</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={mode === 'bootstrap' ? 8 : 1}
-                placeholder="••••••••"
-                className="form-input"
-              />
-            </div>
-            {mode === 'bootstrap' && (
-              <div>
-                <label className="block text-xs uppercase tracking-[0.1em] text-coffee font-semibold mb-1.5">Xác nhận mật khẩu</label>
-                <input
-                  type="password"
-                  value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
-                  required
-                  placeholder="••••••••"
-                  className="form-input"
-                />
-              </div>
-            )}
-
-            {error && <p className="text-error text-sm" role="alert">{error}</p>}
-
-            <button type="submit" disabled={busy} className="btn-primary w-full justify-center disabled:opacity-60">
-              <span>{busy ? 'Đang xử lý...' : mode === 'login' ? 'Đăng nhập' : 'Tạo tài khoản quản trị'}</span>
-            </button>
-          </form>
-
-          {mode === 'bootstrap' && (
-            <p className="mt-4 text-xs text-muted leading-relaxed">
-              Chỉ dùng lần đầu để tạo tài khoản quản trị. Sau khi tạo, chuyển sang "Đăng nhập" cho các lần sau.
-            </p>
-          )}
-        </div>
-
-        <p className="text-center mt-6 text-xs text-muted">
-          <a href="#top" className="link-hand">← Quay lại trang quán</a>
-        </p>
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
       </div>
     </div>
   );
@@ -372,28 +163,17 @@ function AdminLogin({ hasSession }: { onLoggedIn: () => void; hasSession: boolea
 
 // ---------- Reservation Manager ----------
 const STATUS_CONFIG = {
-<<<<<<< HEAD
   PENDING: { label: 'Chờ xác nhận', icon: Clock, color: 'text-orange', bg: 'bg-orange/10' },
   CONFIRMED: { label: 'Đã xác nhận', icon: Check, color: 'text-success', bg: 'bg-success/10' },
   CANCELLED: { label: 'Đã hủy', icon: XCircle, color: 'text-error', bg: 'bg-error/10' },
   COMPLETED: { label: 'Đã hoàn thành', icon: CheckCircle2, color: 'text-olive', bg: 'bg-olive/10' },
-=======
-  pending: { label: 'Chờ xác nhận', icon: Clock, color: 'text-orange', bg: 'bg-orange/10' },
-  confirmed: { label: 'Đã xác nhận', icon: Check, color: 'text-success', bg: 'bg-success/10' },
-  cancelled: { label: 'Đã hủy', icon: XCircle, color: 'text-error', bg: 'bg-error/10' },
-  completed: { label: 'Đã hoàn thành', icon: CheckCircle2, color: 'text-olive', bg: 'bg-olive/10' },
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
 } as const;
 
 function ReservationManager() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
-<<<<<<< HEAD
   const [filter, setFilter] = useState<string>('ALL');
   const { showToast } = useToast();
-=======
-  const [filter, setFilter] = useState<string>('all');
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
 
   const load = async () => {
     const { data } = await supabase.from('reservations').select('*').order('created_at', { ascending: false });
@@ -406,7 +186,6 @@ function ReservationManager() {
   const updateStatus = async (id: string, status: Reservation['status']) => {
     setReservations((prev) => prev.map((r) => r.id === id ? { ...r, status } : r));
     await supabase.from('reservations').update({ status }).eq('id', id);
-<<<<<<< HEAD
     showToast('Cập nhật trạng thái thành công', 'success');
     load(); // Refresh for timestamps
   };
@@ -425,38 +204,13 @@ function ReservationManager() {
     CONFIRMED: reservations.filter((r) => r.status === 'CONFIRMED').length,
     CANCELLED: reservations.filter((r) => r.status === 'CANCELLED').length,
     COMPLETED: reservations.filter((r) => r.status === 'COMPLETED').length,
-=======
-  };
-
-  const deleteRes = async (id: string) => {
-    setReservations((prev) => prev.filter((r) => r.id !== id));
-    await supabase.from('reservations').delete().eq('id', id);
-  };
-
-  const filtered = filter === 'all' ? reservations : reservations.filter((r) => r.status === filter);
-
-  const counts = {
-    all: reservations.length,
-    pending: reservations.filter((r) => r.status === 'pending').length,
-    confirmed: reservations.filter((r) => r.status === 'confirmed').length,
-    cancelled: reservations.filter((r) => r.status === 'cancelled').length,
-    completed: reservations.filter((r) => r.status === 'completed').length,
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
   };
 
   return (
     <div>
       <h2 className="font-serif text-coffee text-3xl font-medium mb-2">Danh sách đặt bàn</h2>
-<<<<<<< HEAD
       <div className="flex flex-wrap gap-2 mb-6 mt-6">
         {(['ALL', 'PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED'] as const).map((s) => (
-=======
-      <p className="text-muted mb-6">Cập nhật trạng thái khi liên hệ khách. Khách đặt mới có trạng thái "Chờ xác nhận".</p>
-
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {(['all', 'pending', 'confirmed', 'cancelled', 'completed'] as const).map((s) => (
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
           <button
             key={s}
             onClick={() => setFilter(s)}
@@ -464,11 +218,7 @@ function ReservationManager() {
               filter === s ? 'bg-coffee text-cream-warm border-coffee' : 'bg-transparent text-coffee border-coffee/20 hover:border-orange'
             }`}
           >
-<<<<<<< HEAD
             {s === 'ALL' ? 'Tất cả' : STATUS_CONFIG[s].label}
-=======
-            {s === 'all' ? 'Tất cả' : STATUS_CONFIG[s].label}
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
             <span className="ml-1.5 opacity-60">{counts[s]}</span>
           </button>
         ))}
@@ -486,7 +236,6 @@ function ReservationManager() {
             const sc = STATUS_CONFIG[r.status];
             const Icon = sc.icon;
             return (
-<<<<<<< HEAD
               <div key={r.id} className="paper-note p-5 flex flex-col md:flex-row md:items-start gap-4">
                 <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-3">
                   <div>
@@ -520,51 +269,6 @@ function ReservationManager() {
                     {r.status !== 'COMPLETED' && <button onClick={() => updateStatus(r.id, 'COMPLETED')} className="px-2.5 py-1 text-xs font-medium text-olive border border-olive/30 rounded-sm hover:bg-olive/10 transition-colors">Hoàn thành</button>}
                     {r.status !== 'CANCELLED' && <button onClick={() => updateStatus(r.id, 'CANCELLED')} className="px-2.5 py-1 text-xs font-medium text-error border border-error/30 rounded-sm hover:bg-error/10 transition-colors">Hủy</button>}
                     <button onClick={() => deleteRes(r.id)} className="px-2.5 py-1 text-xs font-medium text-muted border border-muted/30 rounded-sm hover:bg-muted/10 transition-colors"><Trash2 size={12} /></button>
-=======
-              <div key={r.id} className="paper-note p-5 flex flex-col md:flex-row md:items-center gap-4">
-                {/* Info */}
-                <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div>
-                    <span className="block text-xs uppercase tracking-[0.08em] text-muted font-semibold">Khách</span>
-                    <p className="text-coffee font-medium">{r.name}</p>
-                    <a href={`tel:+84${r.phone}`} className="text-sm text-orange link-hand">{r.phone}</a>
-                  </div>
-                  <div>
-                    <span className="block text-xs uppercase tracking-[0.08em] text-muted font-semibold">Khi nào</span>
-                    <p className="text-coffee">{r.date}</p>
-                    <p className="text-sm text-muted">{r.time} · {r.guests} người</p>
-                  </div>
-                  <div className="col-span-2">
-                    <span className="block text-xs uppercase tracking-[0.08em] text-muted font-semibold">Ghi chú</span>
-                    <p className="text-coffee text-sm">{r.note || '—'}</p>
-                  </div>
-                </div>
-
-                {/* Status + actions */}
-                <div className="flex flex-col items-stretch md:items-end gap-2">
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-sm text-sm font-medium ${sc.bg} ${sc.color}`}>
-                    <Icon size={14} /> {sc.label}
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {r.status !== 'confirmed' && (
-                      <button onClick={() => updateStatus(r.id, 'confirmed')} className="px-2.5 py-1 text-xs font-medium text-success border border-success/30 rounded-sm hover:bg-success/10 transition-colors">
-                        Xác nhận
-                      </button>
-                    )}
-                    {r.status !== 'completed' && (
-                      <button onClick={() => updateStatus(r.id, 'completed')} className="px-2.5 py-1 text-xs font-medium text-olive border border-olive/30 rounded-sm hover:bg-olive/10 transition-colors">
-                        Hoàn thành
-                      </button>
-                    )}
-                    {r.status !== 'cancelled' && (
-                      <button onClick={() => updateStatus(r.id, 'cancelled')} className="px-2.5 py-1 text-xs font-medium text-error border border-error/30 rounded-sm hover:bg-error/10 transition-colors">
-                        Hủy
-                      </button>
-                    )}
-                    <button onClick={() => deleteRes(r.id)} className="px-2.5 py-1 text-xs font-medium text-muted border border-muted/30 rounded-sm hover:bg-muted/10 transition-colors">
-                      <Trash2 size={12} />
-                    </button>
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
                   </div>
                 </div>
               </div>
@@ -576,7 +280,6 @@ function ReservationManager() {
   );
 }
 
-<<<<<<< HEAD
 // ---------- Category Manager ----------
 function CategoryManager() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -682,60 +385,17 @@ function MenuManager() {
     setItems((prev) => prev.filter((i) => i.id !== id));
     await supabase.from('menu_items').delete().eq('id', id);
     showToast('Đã xóa món ăn', 'info');
-=======
-// ---------- Menu Manager ----------
-const CATS = [
-  { key: 'coffee', label: 'Cà phê' },
-  { key: 'tea', label: 'Trà' },
-  { key: 'pastry', label: 'Bánh nhẹ' },
-] as const;
-
-function MenuManager() {
-  const [items, setItems] = useState<MenuItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState<MenuItem | null>(null);
-  const [showForm, setShowForm] = useState(false);
-
-  const load = async () => {
-    const { data } = await supabase.from('menu_items').select('*').order('sort_order', { ascending: true });
-    setItems((data as MenuItem[]) || []);
-    setLoading(false);
-  };
-
-  useEffect(() => { load(); }, []);
-
-  const toggleAvailable = async (item: MenuItem) => {
-    setItems((prev) => prev.map((i) => i.id === item.id ? { ...i, available: !i.available } : i));
-    await supabase.from('menu_items').update({ available: !item.available }).eq('id', item.id);
-  };
-
-  const deleteItem = async (id: string) => {
-    setItems((prev) => prev.filter((i) => i.id !== id));
-    await supabase.from('menu_items').delete().eq('id', id);
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
   };
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-<<<<<<< HEAD
         <h2 className="font-serif text-coffee text-3xl font-medium">Quản lý menu</h2>
         <button onClick={() => { setEditing(null); setShowForm(true); }} className="btn-primary">
-=======
-        <div>
-          <h2 className="font-serif text-coffee text-3xl font-medium mb-1">Quản lý menu</h2>
-          <p className="text-muted">Thêm, sửa, ẩn hoặc xóa món. Thay đổi hiển thị ngay trên trang.</p>
-        </div>
-        <button
-          onClick={() => { setEditing(null); setShowForm(true); }}
-          className="btn-primary"
-        >
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
           <span className="flex items-center gap-1.5"><Plus size={16} /> Thêm món</span>
         </button>
       </div>
 
-<<<<<<< HEAD
       {loading ? <p>Đang tải...</p> : (
         <div className="space-y-3">
           {items.map((item) => (
@@ -745,20 +405,10 @@ function MenuManager() {
               ) : (
                 <div className="w-16 h-16 bg-beige-light rounded-sm shrink-0 flex items-center justify-center text-xs text-muted">No IMG</div>
               )}
-=======
-      {loading ? (
-        <p className="text-muted">Đang tải...</p>
-      ) : (
-        <div className="space-y-3">
-          {items.map((item) => (
-            <div key={item.id} className={`paper-note p-4 flex items-center gap-4 ${!item.available ? 'opacity-50' : ''}`}>
-              <img src={item.image_url} alt={item.name} className="w-16 h-16 object-cover rounded-sm shrink-0" loading="lazy" />
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <h3 className="font-serif text-coffee text-lg font-medium truncate">{item.name}</h3>
                   <span className="price-tag text-xs">{item.price}.000đ</span>
-<<<<<<< HEAD
                   {item.is_featured && <span className="bg-orange text-cream-warm text-[10px] px-1.5 py-0.5 rounded-sm uppercase tracking-wider">Nổi bật</span>}
                 </div>
                 <p className="text-sm text-muted truncate">{item.description}</p>
@@ -771,57 +421,17 @@ function MenuManager() {
                 <button onClick={() => toggleAvailable(item)} className="px-2.5 py-1 text-xs border border-coffee/20 rounded-sm hover:bg-coffee/5">{item.is_available ? 'Hết' : 'Còn'}</button>
                 <button onClick={() => { setEditing(item); setShowForm(true); }} className="p-1.5 border border-coffee/20 rounded-sm hover:bg-coffee/5"><Pencil size={14} /></button>
                 <button onClick={() => deleteItem(item.id)} className="p-1.5 text-error border border-error/30 rounded-sm hover:bg-error/10"><Trash2 size={14} /></button>
-=======
-                </div>
-                <p className="text-sm text-muted truncate">{item.description}</p>
-                <span className="text-xs uppercase tracking-[0.08em] text-olive font-semibold">
-                  {CATS.find((c) => c.key === item.category)?.label}
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <button
-                  onClick={() => toggleAvailable(item)}
-                  className="px-2.5 py-1 text-xs font-medium text-coffee border border-coffee/20 rounded-sm hover:bg-coffee/5 transition-colors"
-                >
-                  {item.available ? 'Ẩn' : 'Hiện'}
-                </button>
-                <button
-                  onClick={() => { setEditing(item); setShowForm(true); }}
-                  className="p-1.5 text-coffee border border-coffee/20 rounded-sm hover:bg-coffee/5 transition-colors"
-                  aria-label="Sửa món"
-                >
-                  <Pencil size={14} />
-                </button>
-                <button
-                  onClick={() => deleteItem(item.id)}
-                  className="p-1.5 text-error border border-error/30 rounded-sm hover:bg-error/10 transition-colors"
-                  aria-label="Xóa món"
-                >
-                  <Trash2 size={14} />
-                </button>
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
               </div>
             </div>
           ))}
         </div>
       )}
 
-<<<<<<< HEAD
       {showForm && <MenuForm item={editing} categories={categories} onClose={() => setShowForm(false)} onSaved={() => { setShowForm(false); load(); }} />}
-=======
-      {showForm && (
-        <MenuForm
-          item={editing}
-          onClose={() => { setShowForm(false); setEditing(null); }}
-          onSaved={() => { setShowForm(false); setEditing(null); load(); }}
-        />
-      )}
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
     </div>
   );
 }
 
-<<<<<<< HEAD
 function MenuForm({ item, categories, onClose, onSaved }: { item: MenuItem | null; categories: Category[]; onClose: () => void; onSaved: () => void }) {
   const [name, setName] = useState(item?.name || '');
   const [slug, setSlug] = useState(item?.slug || '');
@@ -866,47 +476,11 @@ function MenuForm({ item, categories, onClose, onSaved }: { item: MenuItem | nul
     else await supabase.from('menu_items').insert(payload);
     setBusy(false);
     showToast('Lưu món thành công', 'success');
-=======
-function MenuForm({ item, onClose, onSaved }: { item: MenuItem | null; onClose: () => void; onSaved: () => void }) {
-  const [name, setName] = useState(item?.name || '');
-  const [description, setDescription] = useState(item?.description || '');
-  const [price, setPrice] = useState(item ? String(item.price) : '');
-  const [category, setCategory] = useState<MenuItem['category']>(item?.category || 'coffee');
-  const [image_url, setImageUrl] = useState(item?.image_url || '');
-  const [sort_order, setSortOrder] = useState(item ? String(item.sort_order) : '0');
-  const [error, setError] = useState('');
-  const [busy, setBusy] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    if (!name.trim() || !price.trim()) { setError('Tên và giá là bắt buộc.'); return; }
-    setBusy(true);
-
-    const payload = {
-      name: name.trim(),
-      description: description.trim(),
-      price: parseInt(price, 10),
-      category,
-      image_url: image_url.trim(),
-      sort_order: parseInt(sort_order, 10) || 0,
-      available: true,
-    };
-
-    if (item) {
-      await supabase.from('menu_items').update(payload).eq('id', item.id);
-    } else {
-      await supabase.from('menu_items').insert(payload);
-    }
-
-    setBusy(false);
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
     onSaved();
   };
 
   return (
     <div className="fixed inset-0 z-[100] bg-roast-dark/50 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
-<<<<<<< HEAD
       <div className="paper-note p-6 md:p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between mb-6">
           <h3 className="font-serif text-2xl">{item ? 'Sửa món' : 'Thêm món'}</h3>
@@ -922,41 +496,10 @@ function MenuForm({ item, onClose, onSaved }: { item: MenuItem | null; onClose: 
               <label className="text-xs uppercase font-semibold">Danh mục</label>
               <select value={categoryId} onChange={e => setCategoryId(e.target.value)} className="form-input mt-1">
                 {categories.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
-=======
-      <div className="paper-note p-6 md:p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="font-serif text-coffee text-2xl font-medium">
-            {item ? 'Sửa món' : 'Thêm món mới'}
-          </h3>
-          <button onClick={onClose} className="p-1.5 text-muted hover:text-coffee transition-colors" aria-label="Đóng">
-            <X size={20} />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs uppercase tracking-[0.1em] text-coffee font-semibold mb-1.5">Tên món</label>
-            <input value={name} onChange={(e) => setName(e.target.value)} required className="form-input" placeholder="Cà phê sữa đá" />
-          </div>
-          <div>
-            <label className="block text-xs uppercase tracking-[0.1em] text-coffee font-semibold mb-1.5">Mô tả ngắn</label>
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} className="form-input resize-none" placeholder="Cà phê phin, sữa đặc, uống đá..." />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs uppercase tracking-[0.1em] text-coffee font-semibold mb-1.5">Giá (nghìn đồng)</label>
-              <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} required min={0} className="form-input" placeholder="38" />
-            </div>
-            <div>
-              <label className="block text-xs uppercase tracking-[0.1em] text-coffee font-semibold mb-1.5">Loại</label>
-              <select value={category} onChange={(e) => setCategory(e.target.value as MenuItem['category'])} className="form-input">
-                {CATS.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
               </select>
             </div>
           </div>
           <div>
-<<<<<<< HEAD
             <label className="text-xs uppercase font-semibold block mb-1">Ảnh món (Tối đa 2MB)</label>
             <div className="flex gap-4 items-center">
               {imageUrl ? <img src={imageUrl} alt="" className="w-16 h-16 rounded object-cover" /> : <div className="w-16 h-16 bg-beige flex items-center justify-center rounded"><ImageIcon className="text-muted" /></div>}
@@ -976,30 +519,12 @@ function MenuForm({ item, onClose, onSaved }: { item: MenuItem | null; onClose: 
           <div className="flex justify-end gap-3 pt-4 border-t border-coffee/10">
             <button type="button" onClick={onClose} className="btn-secondary">Hủy</button>
             <button type="submit" disabled={busy || uploading} className="btn-primary"><span>Lưu món</span></button>
-=======
-            <label className="block text-xs uppercase tracking-[0.1em] text-coffee font-semibold mb-1.5">URL hình ảnh</label>
-            <input value={image_url} onChange={(e) => setImageUrl(e.target.value)} className="form-input" placeholder="https://images.pexels.com/..." />
-          </div>
-          <div>
-            <label className="block text-xs uppercase tracking-[0.1em] text-coffee font-semibold mb-1.5">Thứ tự hiển thị</label>
-            <input type="number" value={sort_order} onChange={(e) => setSortOrder(e.target.value)} className="form-input" placeholder="0" />
-          </div>
-
-          {error && <p className="text-error text-sm" role="alert">{error}</p>}
-
-          <div className="flex justify-end gap-3 pt-2">
-            <button type="button" onClick={onClose} className="btn-secondary">Hủy</button>
-            <button type="submit" disabled={busy} className="btn-primary disabled:opacity-60">
-              <span>{busy ? 'Đang lưu...' : 'Lưu'}</span>
-            </button>
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
           </div>
         </form>
       </div>
     </div>
   );
 }
-<<<<<<< HEAD
 
 // ---------- Shop Manager ----------
 function ShopManager() {
@@ -1067,5 +592,3 @@ function ShopManager() {
     </div>
   );
 }
-=======
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171

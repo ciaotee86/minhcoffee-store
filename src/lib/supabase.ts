@@ -10,7 +10,6 @@ export const supabase = createClient(url, anonKey, {
   },
 });
 
-<<<<<<< HEAD
 export type Category = {
   id: string;
   key: string;
@@ -48,22 +47,11 @@ export type MenuItem = {
   is_visible: boolean;
   is_available: boolean;
   is_featured: boolean;
-=======
-export type MenuItem = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: 'coffee' | 'tea' | 'pastry';
-  image_url: string;
-  available: boolean;
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
   sort_order: number;
 };
 
 export type Reservation = {
   id: string;
-<<<<<<< HEAD
   customer_name: string;
   phone: string;
   email: string | null;
@@ -103,16 +91,3 @@ export async function uploadImage(file: File): Promise<{ url: string | null; err
     return { url: null, error: err.message };
   }
 }
-=======
-  name: string;
-  phone: string;
-  date: string;
-  time: string;
-  guests: number;
-  note: string;
-  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
-  created_at: string;
-};
-
-export type ReservationInput = Omit<Reservation, 'id' | 'status' | 'created_at'>;
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171

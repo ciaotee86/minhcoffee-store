@@ -9,10 +9,7 @@ import { Reservation } from './components/Reservation';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { Admin } from './components/Admin';
-<<<<<<< HEAD
 import { ToastProvider } from './components/Toast';
-=======
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
 
 function useHashRoute() {
   const [hash, setHash] = useState(window.location.hash);
@@ -40,7 +37,6 @@ function App() {
   };
 
   if (isAdmin) {
-<<<<<<< HEAD
     return (
       <ToastProvider>
         <Admin />
@@ -64,25 +60,6 @@ function App() {
         <Footer onNav={handleNav} />
       </div>
     </ToastProvider>
-=======
-    return <Admin />;
-  }
-
-  return (
-    <div className="min-h-screen">
-      <Header onNav={handleNav} />
-      <main>
-        <Hero onNav={handleNav} />
-        <Story />
-        <Menu onNav={handleNav} />
-        <Space />
-        <Experience />
-        <Reservation />
-        <Contact />
-      </main>
-      <Footer onNav={handleNav} />
-    </div>
->>>>>>> ea7ed197c9c3aa2a7875101efd1d7534e6d82171
   );
 }
 
