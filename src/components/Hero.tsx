@@ -18,12 +18,12 @@ export function Hero({ onNav }: { onNav: (href: string) => void }) {
           <div className="col-span-12 md:col-span-6 lg:col-span-5 relative z-10">
             <Reveal>
               <span className="inline-block text-xs font-sans uppercase tracking-[0.12em] text-orange font-semibold mb-5">
-                Quận 3 · Mở 7:00 — 21:30
+                Đà Nẵng · Mở 7:00 — 21:30
               </span>
             </Reveal>
 
             <Reveal delay={1}>
-              <h1 className="sr-only">Cà phê Minh - Quán cà phê yên tĩnh, làm việc và gặp gỡ tại Quận 3</h1>
+              <h1 className="sr-only">Cà phê Minh - Quán cà phê yên tĩnh, làm việc và gặp gỡ tại Đà Nẵng</h1>
               <h2 className="font-serif text-coffee text-hero font-medium">
                 Một góc nhỏ
                 <br />
@@ -41,7 +41,7 @@ export function Hero({ onNav }: { onNav: (href: string) => void }) {
 
             <Reveal delay={2}>
               <p className="mt-6 text-lg text-muted max-w-md leading-relaxed">
-                Cà phê Minh nằm trong một con hẻm nhỏ tĩnh lặng của Quận 3 — một không gian lý tưởng để thưởng thức cà phê, tập trung làm việc, gặp gỡ bạn bè, hoặc chỉ ngồi yên và để buổi trưa trôi chậm hơn.
+                Cà phê Minh nằm trong một con hẻm nhỏ tĩnh lặng của Đà Nẵng — một không gian lý tưởng để thưởng thức cà phê, tập trung làm việc, gặp gỡ bạn bè, hoặc chỉ ngồi yên và để buổi trưa trôi chậm hơn.
               </p>
             </Reveal>
 
