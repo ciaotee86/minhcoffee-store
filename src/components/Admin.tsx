@@ -173,17 +173,46 @@ const STATUS_CONFIG = {
   COMPLETED: { label: 'Đã hoàn thành', icon: CheckCircle2, color: 'text-olive', bg: 'bg-olive/10' },
 } as const;
 
-const playNotificationSound = () => {
+let audioCtx: AudioContext | null = null;
+let audioUnlocked = false;
+
+const initAudio = () => {
+  if (audioUnlocked) return;
+  const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+  if (!AudioContextClass) return;
+  
+  if (!audioCtx) {
+    audioCtx = new AudioContextClass();
+  }
+  
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume().then(() => {
+      audioUnlocked = true;
+    }).catch(e => console.warn(e));
+  } else {
+    audioUnlocked = true;
+  }
+};
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('click', initAudio, { capture: true });
+  window.addEventListener('keydown', initAudio, { capture: true });
+  window.addEventListener('touchstart', initAudio, { capture: true });
+}
+
+const playNotificationSound = async () => {
   try {
-    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-    if (!AudioContext) return;
-    const ctx = new AudioContext();
+    if (!audioCtx) return;
+    if (audioCtx.state === 'suspended') {
+      await audioCtx.resume();
+    }
 
     const playNote = (freq: number, offset: number) => {
-      const osc = ctx.createOscillator();
-      const gainNode = ctx.createGain();
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
       
-      const time = ctx.currentTime + offset;
+      const time = audioCtx.currentTime + offset;
       
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, time);
@@ -192,7 +221,7 @@ const playNotificationSound = () => {
       gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
       
       osc.connect(gainNode);
-      gainNode.connect(ctx.destination);
+      gainNode.connect(audioCtx.destination);
       
       osc.start(time);
       osc.stop(time + 0.2);
