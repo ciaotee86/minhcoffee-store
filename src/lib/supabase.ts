@@ -64,6 +64,7 @@ export type Reservation = {
   customer_note: string | null;
   internal_note: string | null;
   status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED';
+  cancellation_reason: string | null;
   notification_status: 'PENDING' | 'SENT' | 'FAILED';
   notification_error: string | null;
   created_at: string;

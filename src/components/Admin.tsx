@@ -173,6 +173,8 @@ function ReservationManager() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('ALL');
+  const [cancelingId, setCancelingId] = useState<string | null>(null);
+  const [cancelReason, setCancelReason] = useState<string>('');
   const { showToast } = useToast();
 
   const load = async () => {
@@ -204,11 +206,22 @@ function ReservationManager() {
     };
   }, []);
 
-  const updateStatus = async (id: string, status: Reservation['status']) => {
-    setReservations((prev) => prev.map((r) => r.id === id ? { ...r, status } : r));
-    await supabase.from('reservations').update({ status }).eq('id', id);
+  const updateStatus = async (id: string, status: Reservation['status'], reason?: string) => {
+    setReservations((prev) => prev.map((r) => r.id === id ? { ...r, status, cancellation_reason: reason || null } : r));
+    const payload: any = { status };
+    if (status === 'CANCELLED') {
+      payload.cancellation_reason = reason;
+    }
+    await supabase.from('reservations').update(payload).eq('id', id);
     showToast('Cập nhật trạng thái thành công', 'success');
     load(); // Refresh for timestamps
+  };
+
+  const handleConfirmCancel = () => {
+    if (!cancelingId) return;
+    updateStatus(cancelingId, 'CANCELLED', cancelReason || 'Lý do khác');
+    setCancelingId(null);
+    setCancelReason('');
   };
 
   const deleteRes = async (id: string) => {
@@ -288,13 +301,48 @@ function ReservationManager() {
                   <div className="flex flex-wrap justify-end gap-1.5">
                     {r.status !== 'CONFIRMED' && <button onClick={() => updateStatus(r.id, 'CONFIRMED')} className="px-2.5 py-1 text-xs font-medium text-success border border-success/30 rounded-sm hover:bg-success/10 transition-colors">Xác nhận</button>}
                     {r.status !== 'COMPLETED' && <button onClick={() => updateStatus(r.id, 'COMPLETED')} className="px-2.5 py-1 text-xs font-medium text-olive border border-olive/30 rounded-sm hover:bg-olive/10 transition-colors">Hoàn thành</button>}
-                    {r.status !== 'CANCELLED' && <button onClick={() => updateStatus(r.id, 'CANCELLED')} className="px-2.5 py-1 text-xs font-medium text-error border border-error/30 rounded-sm hover:bg-error/10 transition-colors">Hủy</button>}
+                    {r.status !== 'CANCELLED' && <button onClick={() => setCancelingId(r.id)} className="px-2.5 py-1 text-xs font-medium text-error border border-error/30 rounded-sm hover:bg-error/10 transition-colors">Hủy</button>}
                     <button onClick={() => deleteRes(r.id)} className="px-2.5 py-1 text-xs font-medium text-muted border border-muted/30 rounded-sm hover:bg-muted/10 transition-colors"><Trash2 size={12} /></button>
                   </div>
                 </div>
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Cancel Modal */}
+      {cancelingId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-coffee/40 backdrop-blur-sm p-4">
+          <div className="bg-cream p-6 rounded-md shadow-xl w-full max-w-md border border-coffee/10">
+            <h3 className="font-serif text-coffee text-2xl font-medium mb-4">Lý do hủy bàn</h3>
+            <p className="text-sm text-muted mb-4">
+              Lý do này sẽ được đính kèm trong email thông báo xin lỗi gửi đến khách hàng.
+            </p>
+            <select
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+              className="form-input mb-6"
+            >
+              <option value="">-- Chọn lý do --</option>
+              <option value="Quán đã hết bàn vào khung giờ này">Quán đã hết bàn vào khung giờ này</option>
+              <option value="Quán có việc đột xuất phải đóng cửa / nghỉ lễ">Quán có việc đột xuất phải đóng cửa / nghỉ lễ</option>
+              <option value="Thông tin đặt bàn không hợp lệ">Thông tin đặt bàn không hợp lệ</option>
+              <option value="Lý do khác">Khác</option>
+            </select>
+            <div className="flex gap-3 justify-end">
+              <button onClick={() => setCancelingId(null)} className="px-4 py-2 text-sm text-muted hover:text-coffee transition-colors">
+                Đóng
+              </button>
+              <button
+                onClick={handleConfirmCancel}
+                disabled={!cancelReason}
+                className="px-4 py-2 text-sm font-medium bg-error text-white rounded-sm hover:bg-error/90 transition-colors disabled:opacity-50"
+              >
+                Xác nhận Hủy
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
