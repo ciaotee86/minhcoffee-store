@@ -181,7 +181,28 @@ function ReservationManager() {
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { 
+    load(); 
+    
+    // Đăng ký nhận thông báo thay đổi (Realtime) từ bảng reservations
+    const channel = supabase.channel('realtime_reservations')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'reservations' },
+        (payload) => {
+          console.log('Có sự kiện Realtime từ reservations:', payload);
+          showToast('Có cập nhật đặt bàn mới!', 'info');
+          load(); // Tải lại danh sách khi có sự kiện Insert, Update, Delete
+        }
+      )
+      .subscribe((status, err) => {
+        console.log('Trạng thái kết nối Realtime reservations:', status, err);
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const updateStatus = async (id: string, status: Reservation['status']) => {
     setReservations((prev) => prev.map((r) => r.id === id ? { ...r, status } : r));
@@ -293,7 +314,13 @@ function CategoryManager() {
     setCategories((data as Category[]) || []);
     setLoading(false);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { 
+    load(); 
+    const channel = supabase.channel('realtime_admin_cat')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => load())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
 
   const toggleVisible = async (c: Category) => {
     setCategories((prev) => prev.map((i) => i.id === c.id ? { ...i, is_visible: !i.is_visible } : i));
@@ -374,7 +401,19 @@ function MenuManager() {
     setCategories((c.data as Category[]) || []);
     setLoading(false);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { 
+    load(); 
+    const menuChannel = supabase.channel('realtime_admin_menu')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'menu_items' }, () => load())
+      .subscribe();
+    const catChannel = supabase.channel('realtime_admin_cat2')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => load())
+      .subscribe();
+    return () => { 
+      supabase.removeChannel(menuChannel); 
+      supabase.removeChannel(catChannel); 
+    };
+  }, []);
 
   const toggleVisible = async (item: MenuItem) => {
     setItems((prev) => prev.map((i) => i.id === item.id ? { ...i, is_visible: !i.is_visible } : i));

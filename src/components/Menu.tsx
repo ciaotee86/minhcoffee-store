@@ -13,20 +13,35 @@ export function Menu({ onNav }: { onNav: (href: string) => void }) {
   const [loading, setLoading] = useState(true);
   const [active, setActive] = useState<string>('all');
 
-  useEffect(() => {
-    (async () => {
-      const [menuRes, catRes] = await Promise.all([
-        supabase.from('menu_items').select('*').order('sort_order', { ascending: true }),
-        supabase.from('categories').select('*').order('sort_order', { ascending: true })
-      ]);
-      if (menuRes.error || catRes.error) {
-        setLoading(false);
-        return;
-      }
-      setItems((menuRes.data as MenuItem[]) || []);
-      setCategories((catRes.data as Category[]) || []);
+  const loadData = async () => {
+    const [menuRes, catRes] = await Promise.all([
+      supabase.from('menu_items').select('*').order('sort_order', { ascending: true }),
+      supabase.from('categories').select('*').order('sort_order', { ascending: true })
+    ]);
+    if (menuRes.error || catRes.error) {
       setLoading(false);
-    })();
+      return;
+    }
+    setItems((menuRes.data as MenuItem[]) || []);
+    setCategories((catRes.data as Category[]) || []);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadData();
+
+    const menuChannel = supabase.channel('realtime_menu')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'menu_items' }, () => loadData())
+      .subscribe();
+
+    const catChannel = supabase.channel('realtime_cat')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => loadData())
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(menuChannel);
+      supabase.removeChannel(catChannel);
+    };
   }, []);
 
   const filtered = active === 'all' ? items : items.filter((i) => i.category_id === active);
