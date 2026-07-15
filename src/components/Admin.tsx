@@ -179,25 +179,29 @@ const playNotificationSound = () => {
     if (!AudioContext) return;
     const ctx = new AudioContext();
 
-    const playNote = (freq: number, time: number) => {
+    const playNote = (freq: number, offset: number) => {
       const osc = ctx.createOscillator();
       const gainNode = ctx.createGain();
-      osc.type = 'triangle';
+      
+      const time = ctx.currentTime + offset;
+      
+      osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, time);
-      gainNode.gain.setValueAtTime(0, time);
-      gainNode.gain.linearRampToValueAtTime(0.8, time + 0.05);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.5);
+      
+      gainNode.gain.setValueAtTime(0.5, time);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
+      
       osc.connect(gainNode);
       gainNode.connect(ctx.destination);
+      
       osc.start(time);
-      osc.stop(time + 0.5);
+      osc.stop(time + 0.2);
     };
 
-    const now = ctx.currentTime;
-    playNote(1046.50, now);        // C6
-    playNote(1318.51, now + 0.1);  // E6
-    playNote(1567.98, now + 0.2);  // G6
-    playNote(2093.00, now + 0.3);  // C7
+    playNote(1046.50, 0);     // C6
+    playNote(1318.51, 0.15);  // E6
+    playNote(1567.98, 0.30);  // G6
+    playNote(2093.00, 0.45);  // C7
   } catch (e) {
     console.warn('Audio play failed', e);
   }
