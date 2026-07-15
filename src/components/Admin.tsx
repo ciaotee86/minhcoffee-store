@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { supabase, type MenuItem, type Reservation, type Category, type ShopInfo, uploadImage } from '../lib/supabase';
 import { CoffeeRing } from './CoffeeRing';
 import { LogOut, Plus, Trash2, Pencil, X, Check, Clock, XCircle, CheckCircle2, Image as ImageIcon } from 'lucide-react';
+import { confirmAction, useConfirm } from './ConfirmDialog';
+import { ReportsManager } from './ReportsManager';
 import { useToast } from './Toast';
 
-type Tab = 'reservations' | 'menu' | 'categories' | 'shop';
+type Tab = 'reservations' | 'menu' | 'categories' | 'shop' | 'reports';
 
 export function Admin() {
   const [session, setSession] = useState<any>(null);
@@ -56,6 +58,7 @@ export function Admin() {
         {tab === 'menu' && <MenuManager />}
         {tab === 'categories' && <CategoryManager />}
         {tab === 'shop' && <ShopManager />}
+        {tab === 'reports' && <ReportsManager />}
       </main>
     </div>
   );
@@ -68,6 +71,7 @@ function AdminHeader({ onSignOut, tab, setTab }: { onSignOut: () => void; tab: T
     { k: 'menu', l: 'Menu' },
     { k: 'categories', l: 'Danh mục' },
     { k: 'shop', l: 'Thông tin' },
+    { k: 'reports', l: 'Thống kê' },
   ];
   return (
     <header className="bg-coffee text-cream-warm">
@@ -207,9 +211,12 @@ function ReservationManager() {
   const [cancelingId, setCancelingId] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState<string>('');
   const { showToast } = useToast();
+  const { ConfirmDialogComponent } = useConfirm();
 
   const load = async () => {
-    const { data } = await supabase.from('reservations').select('*').order('created_at', { ascending: false });
+    const vnTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
+    const todayStr = new Date(vnTime).toISOString().split('T')[0];
+    const { data } = await supabase.from('reservations').select('*').gte('reservation_date', todayStr).order('reservation_date', { ascending: true }).order('reservation_time', { ascending: true });
     setReservations((data as Reservation[]) || []);
     setLoading(false);
   };
@@ -261,10 +268,11 @@ function ReservationManager() {
   };
 
   const deleteRes = async (id: string) => {
-    if (!confirm('Bạn có chắc muốn xóa đặt bàn này vĩnh viễn?')) return;
-    setReservations((prev) => prev.filter((r) => r.id !== id));
-    await supabase.from('reservations').delete().eq('id', id);
-    showToast('Đã xóa đặt bàn', 'info');
+    confirmAction('Bạn có chắc muốn xóa đặt bàn này vĩnh viễn?', async () => {
+      setReservations((prev) => prev.filter((r) => r.id !== id));
+      await supabase.from('reservations').delete().eq('id', id);
+      showToast('Đã xóa đặt bàn', 'info');
+    });
   };
 
   const filtered = filter === 'ALL' ? reservations : reservations.filter((r) => r.status === filter);
@@ -381,6 +389,7 @@ function ReservationManager() {
           </div>
         </div>
       )}
+      <ConfirmDialogComponent />
     </div>
   );
 }
@@ -411,10 +420,11 @@ function CategoryManager() {
     await supabase.from('categories').update({ is_visible: !c.is_visible }).eq('id', c.id);
   };
   const deleteItem = async (id: string) => {
-    if (!confirm('Xóa danh mục sẽ báo lỗi nếu có món ăn đang thuộc danh mục này. Tiếp tục?')) return;
-    await supabase.from('categories').delete().eq('id', id);
-    showToast('Đã xóa danh mục', 'info');
-    load();
+    confirmAction('Xóa danh mục sẽ báo lỗi nếu có món ăn đang thuộc danh mục này. Tiếp tục?', async () => {
+      await supabase.from('categories').delete().eq('id', id);
+      showToast('Đã xóa danh mục', 'info');
+      load();
+    });
   };
   const addCategory = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -509,10 +519,11 @@ function MenuManager() {
   };
 
   const deleteItem = async (id: string) => {
-    if (!confirm('Xóa món này?')) return;
-    setItems((prev) => prev.filter((i) => i.id !== id));
-    await supabase.from('menu_items').delete().eq('id', id);
-    showToast('Đã xóa món ăn', 'info');
+    confirmAction('Xóa món này?', async () => {
+      setItems((prev) => prev.filter((i) => i.id !== id));
+      await supabase.from('menu_items').delete().eq('id', id);
+      showToast('Đã xóa món ăn', 'info');
+    });
   };
 
   return (
