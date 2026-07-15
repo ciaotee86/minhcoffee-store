@@ -179,26 +179,25 @@ const playNotificationSound = () => {
     if (!AudioContext) return;
     const ctx = new AudioContext();
 
-    const playBeep = (time: number) => {
+    const playNote = (freq: number, time: number) => {
       const osc = ctx.createOscillator();
       const gainNode = ctx.createGain();
-      
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(880, time);
-      osc.frequency.exponentialRampToValueAtTime(440, time + 0.1);
-      
-      gainNode.gain.setValueAtTime(0.5, time);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
-      
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, time);
+      gainNode.gain.setValueAtTime(0, time);
+      gainNode.gain.linearRampToValueAtTime(0.8, time + 0.05);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.5);
       osc.connect(gainNode);
       gainNode.connect(ctx.destination);
-      
       osc.start(time);
-      osc.stop(time + 0.1);
+      osc.stop(time + 0.5);
     };
 
-    playBeep(ctx.currentTime);
-    playBeep(ctx.currentTime + 0.15); // Tiếng bíp thứ 2
+    const now = ctx.currentTime;
+    playNote(1046.50, now);        // C6
+    playNote(1318.51, now + 0.1);  // E6
+    playNote(1567.98, now + 0.2);  // G6
+    playNote(2093.00, now + 0.3);  // C7
   } catch (e) {
     console.warn('Audio play failed', e);
   }
@@ -343,9 +342,15 @@ function ReservationManager() {
                     <Icon size={14} /> {sc.label}
                   </span>
                   <div className="flex flex-wrap justify-end gap-1.5">
-                    {r.status !== 'CONFIRMED' && <button onClick={() => updateStatus(r.id, 'CONFIRMED')} className="px-2.5 py-1 text-xs font-medium text-success border border-success/30 rounded-sm hover:bg-success/10 transition-colors">Xác nhận</button>}
-                    {r.status !== 'COMPLETED' && <button onClick={() => updateStatus(r.id, 'COMPLETED')} className="px-2.5 py-1 text-xs font-medium text-olive border border-olive/30 rounded-sm hover:bg-olive/10 transition-colors">Hoàn thành</button>}
-                    {r.status !== 'CANCELLED' && <button onClick={() => setCancelingId(r.id)} className="px-2.5 py-1 text-xs font-medium text-error border border-error/30 rounded-sm hover:bg-error/10 transition-colors">Hủy</button>}
+                    {r.status === 'PENDING' && (
+                      <>
+                        <button onClick={() => updateStatus(r.id, 'CONFIRMED')} className="px-2.5 py-1 text-xs font-medium text-success border border-success/30 rounded-sm hover:bg-success/10 transition-colors">Xác nhận</button>
+                        <button onClick={() => setCancelingId(r.id)} className="px-2.5 py-1 text-xs font-medium text-error border border-error/30 rounded-sm hover:bg-error/10 transition-colors">Hủy</button>
+                      </>
+                    )}
+                    {r.status === 'CONFIRMED' && (
+                      <button onClick={() => updateStatus(r.id, 'COMPLETED')} className="px-2.5 py-1 text-xs font-medium text-olive border border-olive/30 rounded-sm hover:bg-olive/10 transition-colors">Hoàn thành</button>
+                    )}
                     <button onClick={() => deleteRes(r.id)} className="px-2.5 py-1 text-xs font-medium text-muted border border-muted/30 rounded-sm hover:bg-muted/10 transition-colors"><Trash2 size={12} /></button>
                   </div>
                 </div>
