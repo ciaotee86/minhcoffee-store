@@ -169,6 +169,37 @@ const STATUS_CONFIG = {
   COMPLETED: { label: 'Đã hoàn thành', icon: CheckCircle2, color: 'text-olive', bg: 'bg-olive/10' },
 } as const;
 
+const playNotificationSound = () => {
+  try {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+
+    const playBeep = (time: number) => {
+      const osc = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, time);
+      osc.frequency.exponentialRampToValueAtTime(440, time + 0.1);
+      
+      gainNode.gain.setValueAtTime(0.5, time);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+      
+      osc.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      
+      osc.start(time);
+      osc.stop(time + 0.1);
+    };
+
+    playBeep(ctx.currentTime);
+    playBeep(ctx.currentTime + 0.15); // Tiếng bíp thứ 2
+  } catch (e) {
+    console.warn('Audio play failed', e);
+  }
+};
+
 function ReservationManager() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -193,7 +224,12 @@ function ReservationManager() {
         { event: '*', schema: 'public', table: 'reservations' },
         (payload) => {
           console.log('Có sự kiện Realtime từ reservations:', payload);
-          showToast('Có cập nhật đặt bàn mới!', 'info');
+          if (payload.eventType === 'INSERT') {
+            showToast('Có đơn đặt bàn mới!', 'success');
+            playNotificationSound();
+          } else {
+            showToast('Dữ liệu đặt bàn vừa được cập nhật', 'info');
+          }
           load(); // Tải lại danh sách khi có sự kiện Insert, Update, Delete
         }
       )

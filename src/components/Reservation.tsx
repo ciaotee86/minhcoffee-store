@@ -83,6 +83,8 @@ export function Reservation() {
     if (form.name.trim().length < 2) e.name = 'Vui lòng nhập họ tên (từ 2 ký tự)';
     if (!form.phone.trim()) e.phone = 'Vui lòng nhập số điện thoại';
     else if (!/^(0|\+84)[0-9]{9}$/.test(form.phone.trim())) e.phone = 'Số điện thoại không hợp lệ';
+    if (!form.email.trim()) e.email = 'Vui lòng nhập địa chỉ email';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) e.email = 'Email không hợp lệ';
     if (!form.date) e.date = 'Vui lòng chọn ngày';
     if (!form.time) e.time = 'Vui lòng chọn giờ';
     const g = parseInt(form.guests, 10);
@@ -237,7 +239,7 @@ export function Reservation() {
                     </Field>
 
                     <Field
-                      label="Email (không bắt buộc)"
+                      label="Email"
                       error={errors.email}
                     >
                       <input
