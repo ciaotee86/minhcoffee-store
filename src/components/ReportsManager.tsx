@@ -39,11 +39,11 @@ export function ReportsManager() {
     const element = document.getElementById('report-content');
     if (!element) return;
     const opt = {
-      margin:       0.5,
+      margin:       0.3,
       filename:     `Thong-Ke-MinhCoffee-${startDate}-den-${endDate}.pdf`,
       image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
     html2pdf().set(opt).from(element).save();
   };
@@ -87,7 +87,7 @@ export function ReportsManager() {
       </div>
 
       {loading ? <p className="text-muted">Đang phân tích dữ liệu...</p> : (
-        <div id="report-content" className="bg-cream-warm p-4 rounded-md">
+        <div id="report-content" className="bg-cream-warm p-6 rounded-md max-w-[800px] mx-auto w-full">
           <div className="text-center mb-6">
             <h1 className="font-serif text-2xl text-coffee">Báo cáo tình hình đặt bàn</h1>
             <p className="text-muted">Từ {startDate} đến {endDate}</p>
@@ -112,9 +112,9 @@ export function ReportsManager() {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-coffee/10">
-            <h3 className="font-serif text-coffee text-xl mb-6">Biểu đồ số lượng đơn theo ngày</h3>
-            <div className="h-[300px] w-full">
+          <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-coffee/10">
+            <h3 className="font-serif text-coffee text-xl mb-4 md:mb-6">Biểu đồ số lượng đơn theo ngày</h3>
+            <div className="h-[250px] md:h-[300px] w-full">
               {chartData.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData}>
